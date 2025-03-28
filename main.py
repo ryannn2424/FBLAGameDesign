@@ -2,6 +2,8 @@ import pygame
 import sys
 import os
 
+import TitleMenu
+
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pygame.init()
@@ -24,10 +26,9 @@ while running:
         else:
           pygame.display.set_mode((960, 540))
         isFullscreen = not isFullscreen
-        
-  screen.fill((0, 0, 0))
-
-  pygame.display.flip()
-
+  
+  titleMenu = TitleMenu.TitleMenu(screen)
+  titleMenu.draw()
+  
 pygame.quit()
 sys.exit()
