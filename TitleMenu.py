@@ -7,6 +7,7 @@ class TitleMenu():
     def __init__(self, screen):
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
+        self.start_time = pygame.time.get_ticks()
         self.base_width = 960
         self.base_height = 540
         self.scale_x = self.screen_rect.width / self.base_width
@@ -19,8 +20,8 @@ class TitleMenu():
         self.base_button_y = self.base_height // 2
 
         # Load and scale logo
-        self.base_logo_width = 400  # Adjust these values based on your logo
-        self.base_logo_height = 200
+        self.base_logo_width = 97 * 3.5  # Adjust these values based on your logo
+        self.base_logo_height = 68 * 3.5
         self.original_logo = pygame.image.load("Assets/UIElements/GameNameLogo.png")
         scaled_logo_width = int(self.base_logo_width * self.scale_x)
         scaled_logo_height = int(self.base_logo_height * self.scale_y)
@@ -33,7 +34,7 @@ class TitleMenu():
         self.rotation_angle = 0
         self.rotation_direction = 1
         self.max_rotation = 15
-        self.rotation_speed = 0.5
+        self.rotation_speed = 0.001
         
         # Create scaled button
         scaled_width = int(self.base_button_width * self.scale_x)
@@ -138,25 +139,12 @@ class TitleMenu():
     def draw(self):
         self.screen.fill((255, 255, 255))
 
-        # Calculate the distance from the current angle to the max rotation
-        distance_to_max = abs(self.max_rotation - abs(self.rotation_angle))
+        elapsed_time = pygame.time.get_ticks() - self.start_time / 1000
+        angle = (15 * math.sin(elapsed_time * self.rotation_speed))
 
-        # Adjust rotation speed based on a sine function
-        normalized_distance = distance_to_max / self.max_rotation
-        self.current_rotation_speed = self.rotation_speed * math.sin(normalized_distance * math.pi / 2)
-
-        # Check if we've reached max rotation in either direction
-        if self.rotation_angle >= self.max_rotation:
-            self.rotation_direction = -1
-        elif self.rotation_angle <= -self.max_rotation:
-            self.rotation_direction = 1
-
-        # Update rotation angle
-        self.rotation_angle += self.current_rotation_speed * self.rotation_direction
-
-        # Rotate and draw logo
-        rotated_logo = pygame.transform.rotate(self.logo, self.rotation_angle)
+        rotated_logo = pygame.transform.rotate(self.logo, angle)
         rotated_rect = rotated_logo.get_rect(center=self.logo_rect.center)
+        
         self.screen.blit(rotated_logo, rotated_rect)
 
         if self.startButton.update():
